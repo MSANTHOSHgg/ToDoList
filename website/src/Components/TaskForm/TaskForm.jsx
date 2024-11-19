@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import './TaskForm.css'
 
 const TaskForm = ({ addTask }) => {
   const [name, setName] = useState("");
@@ -55,14 +56,13 @@ const TaskForm = ({ addTask }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
+    <form onSubmit={handleSubmit} className="toDoFrom">
       <input
         type="text"
         placeholder="Task Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
         required
-        style={{ marginRight: "0.5rem" }}
       />
       <input
         type="text"
@@ -70,7 +70,6 @@ const TaskForm = ({ addTask }) => {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
-        style={{ marginRight: "0.5rem" }}
       />
       <button type="submit">Add Task</button>
     </form>

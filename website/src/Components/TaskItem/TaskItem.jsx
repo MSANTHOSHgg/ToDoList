@@ -1,16 +1,8 @@
 import React from "react";
-
+import './TaskItem.css'
 const TaskItem = ({ task, deleteTask, markComplete }) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "0.5rem",
-        textDecoration: task.completed ? "line-through" : "none",
-      }}
-    >
+    <div className="TaskItem" style={{textDecoration: task.completed ? "line-through" : "none",color: '#888',backgroundColor:task.completed ?'#d3f6bf':''}}>
       <div>
         <strong>{task.name}</strong>: {task.description}
       </div>

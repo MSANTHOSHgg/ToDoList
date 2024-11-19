@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import TaskForm from "./Components/Taskform";
-import TaskList from "./Components/Tasklist";
+import TaskForm from "./Components/TaskForm/TaskForm";
+import TaskList from "./Components/TaskList/TaskList";
 import axios from 'axios';
 import { ClipLoader } from "react-spinners";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// import './App.css';
+import './App.css';
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -127,11 +127,11 @@ const App = () => {
 
 
     return (
-      <div style={{ padding: "1rem" }}>
+      <div className="container">
         <h1>To-Do List</h1>
         <TaskForm addTask={addTask} setTasks={setTasks} tasks={tasks} />
         {loading ? (
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
+        <div className="clipLoader">
           <ClipLoader size={50} color="#0000ff" loading={loading} />
         </div>
       ) : (
