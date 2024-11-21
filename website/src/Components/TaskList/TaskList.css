@@ -6,6 +6,7 @@
   
   .task-list li {
     margin-bottom: 10px;
+    cursor: grab; 
   }
   
   .no-tasks-message {
@@ -15,3 +16,6 @@
     margin: 20px 0;
   }
   
+  .task-list li:active {
+    cursor: grabbing;
+  }

@@ -11,6 +11,7 @@ import './App.css';
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [allTasksCompleted, setAllTasksCompleted] = useState(false);
 
   const addTask = async (task) => {
     try {
@@ -20,11 +21,10 @@ const App = () => {
     } catch (error) {
       console.error("Error saving task:", error);
       throw error;
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
-
 
   const deleteTask = async (id) => {
     try {
@@ -39,7 +39,7 @@ const App = () => {
         draggable: true,
         theme: "light",
       });
-      setTasks(tasks.filter((task) => task.task_id !== id));
+      setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== id));
     } catch (error) {
       console.error("Error deleting task:", error);
       toast.error("Please try again.", {
@@ -51,27 +51,26 @@ const App = () => {
         draggable: true,
         theme: "light",
       });
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
-  
 
   const markComplete = async (id) => {
     const taskToUpdate = tasks.find((task) => task.task_id === id);
-    
+
     if (!taskToUpdate) {
       toast.error("Task not found.");
       return;
     }
-    
+
     try {
-      setLoading(true); 
-      
+      setLoading(true);
+
       const response = await axios.put(`http://localhost:3001/taskupdate/${id}`, {
         completed: !taskToUpdate.completed,
       });
-      
+
       toast.success("Task updated successfully!", {
         position: "top-right",
         autoClose: 3000,
@@ -81,13 +80,12 @@ const App = () => {
         draggable: true,
         theme: "light",
       });
-  
-      setTasks(
-        tasks.map((task) =>
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
           task.task_id === id ? { ...task, completed: response.data.completed } : task
         )
       );
-      
     } catch (error) {
       console.error("Error updating task:", error);
       toast.error("Please try again.", {
@@ -100,10 +98,9 @@ const App = () => {
         theme: "light",
       });
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
-  
 
   const fetchTasks = async () => {
     try {
@@ -111,11 +108,11 @@ const App = () => {
       if (response.data && response.data.tasks) {
         setTasks(response.data.tasks);
       } else {
-        toast.error('No tasks found.');
+        toast.error("No tasks found.");
       }
     } catch (error) {
       console.error("Error fetching tasks:", error);
-      toast.error('Failed to fetch tasks. Please try again later.');
+      toast.error("Failed to fetch tasks. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -125,21 +122,30 @@ const App = () => {
     fetchTasks();
   }, []);
 
+  useEffect(() => {
+    const allCompleted = tasks.length > 0 && tasks.every((task) => task.completed);
+    setAllTasksCompleted(allCompleted);
+  }, [tasks]);
 
-    return (
-      <div className="container">
-        <h1>To-Do List</h1>
-        <TaskForm addTask={addTask} setTasks={setTasks} tasks={tasks} />
-        {loading ? (
+  return (
+    <div className="container">
+      <h1>To-Do List</h1>
+      <TaskForm addTask={addTask} setTasks={setTasks} tasks={tasks} />
+      {loading ? (
         <div className="clipLoader">
           <ClipLoader size={50} color="#0000ff" loading={loading} />
         </div>
       ) : (
-        <TaskList tasks={tasks} deleteTask={deleteTask} markComplete={markComplete} />
+        <TaskList tasks={tasks} setTasks={setTasks} deleteTask={deleteTask} markComplete={markComplete} />
       )}
       <ToastContainer />
-      </div>
-    );
-  };
+      {allTasksCompleted && (
+        <div className="animation">
+          🎉 All Tasks Completed! 🎉
+        </div>
+      )}
+    </div>
+  );
+};
 
-  export default App;
+export default App;
